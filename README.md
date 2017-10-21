@@ -1,2 +1,2 @@
 # python-in-bioinformation
-small scripts
+# there will show some small scripts about bioinformations
