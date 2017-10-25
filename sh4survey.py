@@ -30,10 +30,21 @@ a_k = args.ass_kmer
 
 
 if '0' in args.step:
+	mypath = c_path + '/' + ls
+	f1 = open(mypath,'r')
 	os.mkdir(c_path + '/00NT')
 	os.chdir(c_path + '/00NT')
-	fd = os.open("NT.list",os.O_RDWR|os.O_CREAT)
-	os.write(fd,"begain")
+	fd = os.open("NT.list",os.O_RDWR|os.O_APPEND|os.O_CREAT)
+	count = 0
+	name_file1 = ''
+	for lines in f1:
+		file1 = os.path.basename(lines.strip())		
+		count += 1
+		if count % 2 == 1:
+			name_file1 = file1.strip().split('.')[0]
+	                os.write(fd,'%s\t'%lines.strip())
+	        else:
+	    	        os.write(fd,'%s\t%s\n'%(lines.strip(),name_file1))
 	fd2 = os.open("sh4NT.sh",os.O_RDWR|os.O_CREAT)
 	os.write(fd2,"perl /PROJ/DENOVO/pipeline/02.survey/survey/bin/shell4blast_nt.pl -f %s/00NT/NT.lst -o ./"%c_path)
 	os.close(fd)
@@ -62,7 +73,7 @@ if '2' in args.step:
 	mylen = a_k + 2 
 	os.chdir(c_path + '/02Assemble')
 	td1 = os.open("sh4ass.sh",os.O_RDWR|os.O_CREAT)
-	t1 = '''/PUBLIC/software/DENOVO/pipeline/02.survey/soapDenovoHnew2/grapeHK63 pregraph -s %(cfg)s -K %(a_k)d -R -d 1 -p 26 -o %(a_k)d.%(name)s > %(a_k)d.%(name)s.stp1.log
+        t1 = '''/PUBLIC/software/DENOVO/pipeline/02.survey/soapDenovoHnew2/grapeHK63 pregraph -s %(cfg)s -K %(a_k)d -R -d 1 -p 26 -o %(a_k)d.%(name)s > %(a_k)d.%(name)s.stp1.log
 /PUBLIC/software/DENOVO/pipeline/02.survey/soapDenovoHnew2/grapeHK63 contig -D 1 -M 1 -R -g %(a_k)d.%(name)s > %(a_k)d.%(name)s.stp2.log
 /PUBLIC/software/DENOVO/pipeline/02.survey/soapDenovoHnew2/grapeHK63 map -s %(cfg)s -K %(a_k)d -p 26 -g %(a_k)d.%(name)s > %(a_k)d.%(name)s.stp3.log
 /PUBLIC/software/DENOVO/pipeline/02.survey/soapDenovoHnew2/grapeHK63 scaff -F 1 -g %(a_k)d.%(name)s -L %(len)d > %(a_k)d.%(name)s.stp4.log
@@ -71,11 +82,11 @@ if '2' in args.step:
 #perl /PUBLIC/software/DENOVO/pipeline/02.survey/survey/bin/cutoff_100.pl %(a_k)d.%(name)s.contig > %(a_k)d.%(name)s.contig.cutoff_100
 #perl /PUBLIC/software/DENOVO/pipeline/02.survey/survey/bin/cutoff_100.pl %(a_k)d.%(name)s.scafSeq > %(a_k)d.%(name)s.scafSeq.cutoff_100
 /PUBLIC/software/public/System/Perl-5.18.2/bin/perl /PUBLIC/software/DENOVO/pipeline/02.survey/survey/bin/my_drawcov.pl %(dir)s/02Assemble/%(a_k)d.%(name)s.bubOnGraph'''%{'cfg':cfg,'a_k':a_k,'name':name,'len':mylen,'dir':c_path}
-    os.write(td1,t1)
-    td2 = os.open("delete_survey.sh",os.O_RDWR|os.O_CREAT)
-    os.write(td2,'rm -r %(dir)s/02Assemble/*.ins %(dir)s/02Assemble/*.41merFreq %(dir)s/02Assemble/*.Arc %(dir)s/02Assemble/*.arc_multi %(dir)s/02Assemble/*.bubOnGraph %(dir)s/02Assemble/*.ContigIndex %(dir)s/02Assemble/*.ctgAlongGap %(dir)s/02Assemble/*.edge* %(dir)s/02Assemble/*.filtBubble %(dir)s/02Assemble/*.gapSeq %(dir)s/02Assemble/*.indexTrack %(dir)s/02Assemble/*.links %(dir)s/02Assemble/*.markOnEdge %(dir)s/02Assemble/*.newContigIndex %(dir)s/02Assemble/*.path %(dir)s/02Assemble/*.peGrads %(dir)s/02Assemble/*.pre* %(dir)s/02Assemble/*.read* %(dir)s/02Assemble/*.red_gap %(dir)s/02Assemble/*.repStruct %(dir)s/02Assemble/*.scaf %(dir)s/02Assemble/*.scaf_* %(dir)s/02Assemble/*.scafSeq_ite %(dir)s/02Assemble/*.split.* %(dir)s/02Assemble/*.Tipinfo_* %(dir)s/02Assemble/*.updated.edge %(dir)s/02Assemble/*.vertex %(dir)s/02Assemble/dot* %(dir)s/02Assemble/freq.stat %(dir)s/02Assemble/gapseqB'%{'dir':c_path})
-    os.close(td1)
-    os.close(td2)
+        os.write(td1,t1)
+        td2 = os.open("delete_survey.sh",os.O_RDWR|os.O_CREAT)
+        os.write(td2,'rm -r %(dir)s/02Assemble/*.ins %(dir)s/02Assemble/*.41merFreq %(dir)s/02Assemble/*.Arc %(dir)s/02Assemble/*.arc_multi %(dir)s/02Assemble/*.bubOnGraph %(dir)s/02Assemble/*.ContigIndex %(dir)s/02Assemble/*.ctgAlongGap %(dir)s/02Assemble/*.edge* %(dir)s/02Assemble/*.filtBubble %(dir)s/02Assemble/*.gapSeq %(dir)s/02Assemble/*.indexTrack %(dir)s/02Assemble/*.links %(dir)s/02Assemble/*.markOnEdge %(dir)s/02Assemble/*.newContigIndex %(dir)s/02Assemble/*.path %(dir)s/02Assemble/*.peGrads %(dir)s/02Assemble/*.pre* %(dir)s/02Assemble/*.read* %(dir)s/02Assemble/*.red_gap %(dir)s/02Assemble/*.repStruct %(dir)s/02Assemble/*.scaf %(dir)s/02Assemble/*.scaf_* %(dir)s/02Assemble/*.scafSeq_ite %(dir)s/02Assemble/*.split.* %(dir)s/02Assemble/*.Tipinfo_* %(dir)s/02Assemble/*.updated.edge %(dir)s/02Assemble/*.vertex %(dir)s/02Assemble/dot* %(dir)s/02Assemble/freq.stat %(dir)s/02Assemble/gapseqB'%{'dir':c_path})
+        os.close(td1)
+        os.close(td2)
 if '3' in args.step:
 	os.mkdir(c_path + '/03Coverage_contig')
 	mylen2 = 500
